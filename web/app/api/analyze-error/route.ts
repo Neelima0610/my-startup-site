@@ -1,54 +1,27 @@
-
+// /api/analyze-error.ts
+import { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
+const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export async function POST(request: Request) {
-  const { error } = await request.json();
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  if (!error) {
-    return Response.json({ error: "Error text is required" }, { status: 400 });
-  }
+  const { error } = req.body;
+  if (!error) return res.status(400).json({ error: "Error text is required" });
 
   try {
-    const prompt = `
-You are a senior software engineer and debugging expert.
-
-Analyze the following error or stack trace and respond in EXACTLY this format:
-
-What happened:
-<1–2 sentences>
-
-Why it happened:
-<root cause explanation>
-
-How to fix it:
-<clear, actionable steps>
-
-Rules:
-- Be concise
-- Do not mention AI
-- Do not add extra sections
-- Assume developer audience
-
-Error:
-${error}
-    `;
-
-    const completion = await openai.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: `Analyze this error:\n${error}` }],
       temperature: 0
     });
 
-    const analysis = completion.choices[0].message?.content || "No analysis generated.";
-
-    return Response.json({ analysis });
-
+    res.status(200).json({ analysis: completion.choices[0].message?.content });
   } catch (err) {
     console.error(err);
-    return Response.json({ error: "Failed to generate analysis" }, { status: 500 });
+    res.status(500).json({ error: "Failed to generate analysis" });
   }
 }
