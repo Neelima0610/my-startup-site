@@ -1,27 +1,29 @@
-// /api/analyze-error.ts
-import { NextApiRequest, NextApiResponse } from "next";
+export const runtime = "node";
+
+import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const error = body.error;
 
-  const { error } = req.body;
-  if (!error) return res.status(400).json({ error: "Error text is required" });
+  if (!error) return NextResponse.json({ error: "Error text required" }, { status: 400 });
 
-  try {
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: `Analyze this error:\n${error}` }],
-      temperature: 0
-    });
+  const prompt = `
+You are a senior software engineer...
+Error:
+${error}
+  `;
 
-    res.status(200).json({ analysis: completion.choices[0].message?.content });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to generate analysis" });
-  }
+  const completion = await client.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0
+  });
+
+  return NextResponse.json({ analysis: completion.choices[0].message?.content });
 }
