@@ -38,6 +38,11 @@ export default function HomePage() {
           </p>
         </Link>
       </section>
+
+      {/* Footer */}
+      <footer className="mt-32 text-center text-sm text-gray-500">
+        © {new Date().getFullYear()} Neelima. Built with ❤️ and curiosity.
+      </footer>
     </>
   );
 }
