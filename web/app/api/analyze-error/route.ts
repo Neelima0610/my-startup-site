@@ -1,3 +1,6 @@
+// app/api/analyze-error/route.ts
+export const runtime = "nodejs"; // serverless Node function
+
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
