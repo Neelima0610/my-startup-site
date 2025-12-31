@@ -145,45 +145,71 @@ export default function ErrorLens() {
             </div>
 
             {/* MIDDLE: Output */}
-            <div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
-              <div className="p-4 border-b flex justify-between items-center">
-                <h2 className="font-semibold">🧠 Analysis Output</h2>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleCopy}
-                    disabled={!result}
-                    className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
-                  >
-                    Copy
-                  </button>
-                  <button
-                    onClick={handleClear}
-                    disabled={!result}
-                    className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
-                  >
-                    Clear
-                  </button>
-                </div>
-              </div>
-              <div className="flex-1 overflow-auto p-4 min-h-0 relative">
-                {result ? (
-                  <>
-                    <pre className="whitespace-pre-wrap font-mono text-sm">
-                      {result}
-                    </pre>
-                    {copied && (
-                      <span className="absolute top-2 right-4 text-xs text-green-600 bg-white px-2 py-1 rounded shadow">
-                        Copied!
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-gray-400 italic">
-                    Run analysis to see results here.
-                  </p>
-                )}
-              </div>
-            </div>
+            {/* MIDDLE: Output */}
+<div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
+  <div className="p-4 border-b flex justify-between items-center">
+    <h2 className="font-semibold">🧠 Analysis Output</h2>
+    <div className="flex gap-2">
+      {/* Copy Icon */}
+      <button
+        onClick={handleCopy}
+        disabled={!result}
+        title="Copy output"
+        className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <rect x="9" y="9" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
+          <rect x="3" y="3" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
+        </svg>
+      </button>
+
+      {/* Delete Icon */}
+      <button
+        onClick={handleClear}
+        disabled={!result}
+        title="Clear output"
+        className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 7h12M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div className="flex-1 overflow-auto p-4 min-h-0 relative">
+    {result ? (
+      <>
+        <pre className="whitespace-pre-wrap font-mono text-sm">{result}</pre>
+        {copied && (
+          <span className="absolute top-2 right-4 text-xs text-green-600 bg-white px-2 py-1 rounded shadow">
+            Copied!
+          </span>
+        )}
+      </>
+    ) : (
+      <p className="text-gray-400 italic">Run analysis to see results here.</p>
+    )}
+  </div>
+</div>
+
 
             {/* RIGHT: History */}
             <div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
