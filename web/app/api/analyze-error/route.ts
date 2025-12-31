@@ -1,30 +1,35 @@
-// app/api/analyze-error/route.ts
-export const runtime = "nodejs"; // serverless Node function
+import { NextResponse } from "next/server";
 
-import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const error = body.error;
-
-  if (!error) return NextResponse.json({ error: "Error text required" }, { status: 400 });
+export async function POST(req: Request) {
+  const { errorText } = await req.json();
 
   const prompt = `
-You are a senior software engineer...
-Error:
-${error}
-  `;
+        Identify the programming language of the following error or stack trace.
 
-  const completion = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0
+        Error/Stack Trace:
+        ${errorText}
+`;
+
+  const res = await fetch(process.env.OLLAMA_URL!, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "phi3",
+    //model: "mistral",
+      prompt,
+      stream: false,
+    }),
   });
+  console.log("Response from local Ollama LLM:", res);
+  if (!res.ok) {
+    return NextResponse.json({
+      analysis: "Local LLM failed",
+    });
+  }
 
-  return NextResponse.json({ analysis: completion.choices[0].message?.content });
+  const data = await res.json();
+
+  return NextResponse.json({
+    analysis: data.response,
+  });
 }

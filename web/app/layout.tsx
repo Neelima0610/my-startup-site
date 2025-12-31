@@ -13,21 +13,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Neelima | Startup Ideas & Tools",
-  description: "Startup ideas, AI prompts, and developer tools",
+  title: "ErrorLens",
+  description: "Analyze errors like a pro",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main className="mx-auto max-w-6xl px-6 py-24">
+        {/* 👇 THIS IS THE KEY */}
+        <main className="h-screen flex flex-col overflow-hidden">
           {children}
         </main>
       </body>
