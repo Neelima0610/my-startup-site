@@ -38,15 +38,25 @@ export default function ErrorLens() {
       const res = await fetch("/api/analyze-error", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ errorText }),
+        body: JSON.stringify({ errorText })
       });
+
       const data = await res.json();
-      setResult(data.analysis);
+      // Format the result as pretty JSON if it's an object, else just show as is
+      let formattedResult = data.result;
+      try {
+        // Try to parse and pretty-print if it's valid JSON
+        const parsed = JSON.parse(data.result);
+        formattedResult = JSON.stringify(parsed, null, 2);
+      } catch {
+        // If not JSON, leave as is
+      }
+      setResult(formattedResult);
 
       const newItem = {
         id: crypto.randomUUID(),
         errorText,
-        result: data.analysis,
+        result: data.result,
         timestamp: Date.now(),
       };
       const updated = [newItem, ...history].slice(0, 3);
