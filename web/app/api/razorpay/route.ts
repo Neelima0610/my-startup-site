@@ -3,9 +3,16 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 
+const key_id = process.env.RAZORPAY_KEY_ID;
+const key_secret = process.env.RAZORPAY_KEY_SECRET;
+
+if (!key_id || !key_secret) {
+  throw new Error("Razorpay `key_id` or `key_secret` is missing");
+}
+
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  key_id,
+  key_secret
 });
 
 export async function POST() {
