@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* 👇 THIS IS THE KEY */}
-        <main className="h-screen flex flex-col overflow-hidden">
+        <main className="min-h-screen">
           <SessionProvider>{children}</SessionProvider>
         </main>
       </body>

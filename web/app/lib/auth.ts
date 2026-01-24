@@ -1,20 +1,28 @@
-// auth/[...nextauth]/route.ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 
-// 1️⃣ Config object
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-    }),
+          clientId: process.env.GITHUB_ID!,
+          clientSecret: process.env.GITHUB_SECRET!,
+        }),
   ],
   pages: {
     signIn: "/login",
   },
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async session({ session, token }) {
+      session.user.isPro = token.isPro as boolean;
+      return session;
+    },
+    async jwt({ token }) {
+      token.isPro = false; // later from DB
+      return token;
+    },
   },
 };
 

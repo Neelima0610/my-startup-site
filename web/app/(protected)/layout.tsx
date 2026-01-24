@@ -1,7 +1,8 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../lib/auth";
 import  UserNav  from "../../components/UserNav";
+import UpgradeButton from "@/components/UpgradeButton";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
@@ -25,6 +26,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
           }}
         >
           <UserNav />
+          <UpgradeButton />
         </header>
       {children}
     </div>

@@ -1,23 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [showTools, setShowTools] = useState(false);
+  const router = useRouter();
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
-  const tools = [
-    { name: "ErrorLens", description: "Analyze errors & stack traces instantly", href: "/tools/errorlens" },
-    // Add more tools here
-  ];
-
-   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-
-const plans = [
+  const plans = [
     {
       name: "Free",
       price: "$0",
-      features: ["Basic AI tools access", "Limited usage", "Community support"],
+      features: [
+        "Basic AI tools access",
+        "Limited usage",
+        "Community support",
+      ],
       color: "#3498db",
     },
     {
@@ -25,8 +23,8 @@ const plans = [
       price: "$10 / month",
       features: [
         "Advanced AI tools",
-        "Priority access & support",
         "Unlimited usage",
+        "Priority support",
         "Early access to new features",
       ],
       color: "#f39c12",
@@ -129,7 +127,10 @@ const plans = [
               transition: "all 0.3s",
               backgroundColor: selectedPlan === plan.name ? "#fdfdfd" : "#fff",
             }}
-            onClick={() => setSelectedPlan(plan.name)}
+            onClick={() => {
+              setSelectedPlan(plan.name);
+              if (plan.name === "Free") router.push("/tools");
+            }}
           >
             <h2 style={{ fontSize: "1.6rem", marginBottom: "0.5rem", color: plan.color }}>
               {plan.name}
@@ -147,6 +148,12 @@ const plans = [
             </ul>
 
             <button
+              onClick={(e) => {
+                  e.stopPropagation();
+                  if (plan.name === "Free") router.push("/tools");
+                  if (plan.name === "Pro")
+                    alert("Pro upgrade coming soon 🚀");
+                }}
               style={{
                 padding: "0.6rem 1.2rem",
                 border: "none",
@@ -155,14 +162,14 @@ const plans = [
                 borderRadius: "8px",
                 fontWeight: "bold",
                 cursor: "pointer",
-                transition: "all 0.2s",
+                transition: "all 0.2s"                               
               }}
             >
               {selectedPlan === plan.name
                 ? "Selected"
                 : plan.name === "Pro"
                 ? "Upgrade"
-                : "Select"}
+                : "Continue with Free"}
             </button>
           </div>
         ))}

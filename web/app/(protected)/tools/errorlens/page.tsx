@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
 
 export default function ErrorLens() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"free" | "premium">("free");
   const [hasPremium, setHasPremium] = useState(false); // toggle after payment
+  const router = useRouter();
 
   type ErrorHistoryItem = {
     id: string;
@@ -82,9 +85,13 @@ export default function ErrorLens() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100">
+      
+
       {/* Header */}
       <div className="px-6 py-4 border-b bg-white flex items-center justify-between">
+        {/* Back Button */}
+        <BackButton title="ErrorLens" backHref="/tools" />
         <h1 className="text-2xl font-bold">🧠 ErrorLens</h1>
         {/* Tab navigation */}
         <div className="flex gap-2">
@@ -112,7 +119,7 @@ export default function ErrorLens() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 p-6 flex flex-col min-h-0">
+      <div className="p-6">
         {/* Tab Content */}
         {activeTab === "premium" && !hasPremium ? (
           <div className="flex-1 flex items-center justify-center text-center">
@@ -132,9 +139,9 @@ export default function ErrorLens() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 min-h-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* LEFT: Error Input */}
-            <div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
+            <div className="flex flex-col bg-white rounded-2xl shadow border ">
               <div className="p-4 border-b">
                 <h2 className="font-semibold">🔍 Error / Stack Trace</h2>
               </div>
@@ -156,73 +163,72 @@ export default function ErrorLens() {
 
             {/* MIDDLE: Output */}
             {/* MIDDLE: Output */}
-<div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
-  <div className="p-4 border-b flex justify-between items-center">
-    <h2 className="font-semibold">🧠 Analysis Output</h2>
-    <div className="flex gap-2">
-      {/* Copy Icon */}
-      <button
-        onClick={handleCopy}
-        disabled={!result}
-        title="Copy output"
-        className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <rect x="9" y="9" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
-          <rect x="3" y="3" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
-        </svg>
-      </button>
+            <div className="flex flex-col bg-white rounded-2xl shadow border ">
+              <div className="p-4 border-b flex justify-between items-center">
+                <h2 className="font-semibold">🧠 Analysis Output</h2>
+                <div className="flex gap-2">
+                  {/* Copy Icon */}
+                  <button
+                    onClick={handleCopy}
+                    disabled={!result}
+                    title="Copy output"
+                    className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
+                      <rect x="3" y="3" width="13" height="13" rx="2" strokeWidth="2" stroke="currentColor" />
+                    </svg>
+                  </button>
 
-      {/* Delete Icon */}
-      <button
-        onClick={handleClear}
-        disabled={!result}
-        title="Clear output"
-        className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M6 7h12M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z"
-          />
-        </svg>
-      </button>
-    </div>
-  </div>
+                  {/* Delete Icon */}
+                  <button
+                    onClick={handleClear}
+                    disabled={!result}
+                    title="Clear output"
+                    className="p-1 rounded hover:bg-gray-100 disabled:opacity-50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 7h12M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
 
-  <div className="flex-1 overflow-auto p-4 min-h-0 relative">
-    {result ? (
-      <>
-        <pre className="whitespace-pre-wrap font-mono text-sm">{result}</pre>
-        {copied && (
-          <span className="absolute top-2 right-4 text-xs text-green-600 bg-white px-2 py-1 rounded shadow">
-            Copied!
-          </span>
-        )}
-      </>
-    ) : (
-      <p className="text-gray-400 italic">Run analysis to see results here.</p>
-    )}
-  </div>
-</div>
-
+              <div className="flex-1 overflow-auto p-4 min-h-0 relative">
+                {result ? (
+                  <>
+                    <pre className="whitespace-pre-wrap font-mono text-sm">{result}</pre>
+                    {copied && (
+                      <span className="absolute top-2 right-4 text-xs text-green-600 bg-white px-2 py-1 rounded shadow">
+                        Copied!
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-gray-400 italic">Run analysis to see results here.</p>
+                )}
+              </div>
+            </div>
 
             {/* RIGHT: History */}
-            <div className="flex flex-col bg-white rounded-2xl shadow border min-h-0">
+            <div className="flex flex-col bg-white rounded-2xl shadow border ">
               <div className="p-4 border-b flex justify-between items-center">
                 <h2 className="font-semibold">🕑 Recent Errors</h2>
                 <button
