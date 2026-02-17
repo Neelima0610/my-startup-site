@@ -28,6 +28,7 @@ export default function ErrorLens() {
     if (saved) setHistory(JSON.parse(saved));
   }, []);
 
+  
   async function analyzeError() {
     if (activeTab === "premium" && !hasPremium) {
       alert("Premium features require payment!");

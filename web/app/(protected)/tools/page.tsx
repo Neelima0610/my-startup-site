@@ -5,6 +5,7 @@ import BackButton from "@/components/BackButton";
 
 export default async function ToolsPage() {
   const session = await getServerSession(authOptions);
+  console.log("Tools Page session:", session);
   const isProUser = !!session?.user?.isPro;
 
   const tools = [

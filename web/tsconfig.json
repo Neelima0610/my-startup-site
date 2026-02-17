@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["next-auth"]
+    "types": ["next-auth", "next-auth/adapters"]
   },
   "include": [
     "next-env.d.ts",
