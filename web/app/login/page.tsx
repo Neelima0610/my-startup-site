@@ -247,7 +247,13 @@ export default function LoginPage() {
                 required
                 className="w-full border border-stone-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700"
               />
-
+              <button
+                type="button"
+                onClick={() => router.push("/forgot-password")}
+                className="text-xs text-cyan-700 hover:underline text-left"
+              >
+                Forgot password?
+              </button>
               <button
                 type="submit"
                 disabled={loading}

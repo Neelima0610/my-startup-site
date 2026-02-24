@@ -24,6 +24,9 @@ model User {
   isPro          Boolean   @default(false)
   hashedPassword String?
 
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+
   accounts       Account[]
   sessions       Session[]
 
