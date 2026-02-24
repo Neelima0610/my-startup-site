@@ -1,6 +1,6 @@
 import ToolCard from "@/components/ToolCard";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
+import { authOptions } from "@/lib/auth";
 import BackButton from "@/components/BackButton";
 
 export default async function ToolsPage() {

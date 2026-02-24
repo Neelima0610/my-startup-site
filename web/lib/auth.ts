@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "../lib/auth-adapter"; // point to your new wrapper
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 import { compare } from "bcryptjs"; // for password hashing
 const prisma = new PrismaClient();
@@ -27,32 +28,32 @@ export const authOptions: NextAuthOptions = {
         identifier: { label: "Email / Username / Mobile", type: "text" },
         password: { label: "Password", type: "password" },
       },
-       async authorize(credentials) {
-        if (!credentials?.identifier || !credentials.password) {
+      async authorize(credentials) {
+        if (!credentials?.identifier || !credentials?.password) {
           return null;
         }
 
-        const user = await prisma.user.findFirst({
-          where: {
-            OR: [
-              { email: credentials.identifier },
-              { mobile: credentials.identifier },
-              { username: credentials.identifier },
-            ],
-          },
-    });
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.identifier },
+        });
 
-        if (!user || !user.hashedPassword) return null;
+        if (!user || !user.hashedPassword) {
+          return null;
+        }
 
-        const isValid = await compare(credentials.password, user.hashedPassword);
+         const isValid = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
+        
         if (!isValid) return null;
 
         return {
           id: user.id,
           email: user.email,
-          name: user.username,   // username → name for NextAuth
+          name: user.username,
           image: user.image,
-          isPro: user.isPro
+          isPro: user.isPro,
         };
       },
     }),

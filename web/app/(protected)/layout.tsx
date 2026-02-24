@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../lib/auth";
+import { authOptions } from "@/lib/auth";
 import  UserNav  from "../../components/UserNav";
 import UpgradeButton from "@/components/UpgradeButton";
 
