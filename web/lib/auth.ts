@@ -10,6 +10,7 @@ import { compare } from "bcryptjs"; // for password hashing
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
+  
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -29,23 +30,26 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("Auth options loaded");
+        console.log("Credentials.identifier:", credentials?.identifier);
+        console.log("Credentials.password:", credentials?.password);
         if (!credentials?.identifier || !credentials?.password) {
           return null;
         }
-
+        console.log("credentials:", credentials.password);        
         const user = await prisma.user.findUnique({
           where: { email: credentials.identifier },
         });
-
+        console.log("User found:", user?.hashedPassword);
         if (!user || !user.hashedPassword) {
           return null;
-        }
-
+        }        
+        console.log("user:", user.hashedPassword);
          const isValid = await bcrypt.compare(
           credentials.password,
           user.hashedPassword
         );
-        
+         console.log("is valid user:", isValid);
         if (!isValid) return null;
 
         return {
@@ -60,18 +64,23 @@ export const authOptions: NextAuthOptions = {
   ],
 
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
 
   pages: {
     signIn: "/login", // custom login page
     error: "/login",  // redirect back on error
   },
-
   callbacks: {
-    async session({ session, user }) {
-      if (session.user && user) {
-        session.user.isPro = user.isPro ?? false;
+    async jwt({ token, user }) {
+      if (user) {
+        token.isPro = user.isPro;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.isPro = token.isPro as boolean;
       }
       return session;
     },

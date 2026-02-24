@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
+    console.log("Signup API hit");
     const body = await req.json();
     const { email, password, username } = body;
 
@@ -29,14 +30,22 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    
+    console.log("Creating user with:", email);
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email,
+          username,
+          hashedPassword: hashedPassword,
+        },
+      });
 
-    await prisma.user.create({
-      data: {
-        email,
-        username,
-        hashedPassword: hashedPassword,
-      },
-    });
+      console.log("User created:", user.id);
+
+    } catch (error) {
+      console.error("Prisma error:", error);
+    }
 
     return NextResponse.json({ success: true });
 
