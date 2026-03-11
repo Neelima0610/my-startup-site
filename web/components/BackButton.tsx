@@ -7,7 +7,7 @@ interface BackButtonProps {
   backHref?: string;
 }
 
-export default function BackButton({ backHref = "/" }: BackButtonProps) {
+export default function BackButton({ backHref = "/dashboard" }: BackButtonProps) {
   
   const router = useRouter();
   console.log("Rendering BackButton");

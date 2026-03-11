@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
-import  UserNav  from "../../components/UserNav";
+import  UserNav  from "../../../components/UserNav";
 import UpgradeButton from "@/components/UpgradeButton";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -18,16 +18,9 @@ export default async function ProtectedLayout({ children }: { children: React.Re
         width: "100%",
       }}
     >
-        <header
-          style={{
-            padding: "1rem",
-            borderBottom: "1px solid #eaeaea",
-            marginBottom: "1rem",
-          }}
-        >
-          <UserNav />
-          <UpgradeButton />
-        </header>
+      <header className="flex items-center pl-6 pr-2 py-3 border-b border-slate-200">        
+        <UserNav />        
+      </header>
       {children}
     </div>
   );
