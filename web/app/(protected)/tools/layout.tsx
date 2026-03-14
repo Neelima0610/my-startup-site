@@ -14,10 +14,7 @@ export default function ToolsLayout({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.25 }}
-    >
-       <header className="flex items-center pl-6 pr-2 py-3 border-b border-slate-200">        
-          <UserNav />        
-      </header>
+    >   
       {children}
     </motion.div>
   );

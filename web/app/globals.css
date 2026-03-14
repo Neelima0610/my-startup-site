@@ -58,4 +58,34 @@ body {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+/* 3D book effect */
 
+/* 3D container */
+.perspective {
+  perspective: 1200px;
+}
+
+/* Book wrapper */
+.book {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s ease;
+}
+
+/* Rotate book on hover */
+.group:hover .book {
+  transform: rotateY(180deg);
+}
+
+/* Faces of book */
+.book-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Back side */
+.book-back {
+  transform: rotateY(180deg);
+}

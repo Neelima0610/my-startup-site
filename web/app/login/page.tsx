@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
@@ -11,7 +12,17 @@ export default function LoginPage() {
   type Step = "email" | "login" | "signup";
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
+  const {data:session,status}=useSession()  
 
+  useEffect(()=>{
+
+  if(session){
+  router.replace("/dashboard")
+  }
+
+  },[session])
+
+  if(status==="loading") return null
   return (
     <main className="min-h-screen flex bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 text-slate-800">            
 

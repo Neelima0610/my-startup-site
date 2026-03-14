@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import TopNav from "@/components/TopNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +27,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* 👇 THIS IS THE KEY */}
-        <main className="min-h-screen">
-          <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+        <TopNav />
+        <main className="min-h-screen">            
+        {children}                
         </main>
+        </SessionProvider>
       </body>
     </html>
   );

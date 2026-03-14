@@ -17,10 +17,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
         minHeight: "100vh", // important for scroll
         width: "100%",
       }}
-    >
-      <header className="flex items-center pl-6 pr-2 py-3 border-b border-slate-200">        
-        <UserNav />        
-      </header>
+    >      
       {children}
     </div>
   );

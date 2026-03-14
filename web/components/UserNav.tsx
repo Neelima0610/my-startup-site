@@ -1,48 +1,62 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import { signOut,useSession } from "next-auth/react";
+import { useState } from "react";
 
-export default function UserNav() {
-  const { data: session } = useSession();
+export default function UserNav(){
 
-  if (!session) return null;
+const {data:session}=useSession()
+const [open,setOpen]=useState(false)
 
-  const name = session.user?.name || session.user?.email || "User";
-  const initial = name.charAt(0).toUpperCase();
+if(!session) return null
 
-  return (
-    <div className="ml-auto">
+return(
 
-      <div className="flex items-center gap-4 bg-transparent border border-slate-200 rounded-full px-6 py-2 hover:bg-white/20 transition">
+<div className="relative">
 
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-cyan-600 text-white flex items-center justify-center text-sm font-semibold">
-          {initial}
-        </div>
+<button
+onClick={()=>setOpen(!open)}
+className="flex items-center gap-3 border rounded-full px-4 py-2"
+>
 
-        {/* User Info */}
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-slate-800">
-            {session.user?.name || "Developer"}
-          </span>
-          <span className="text-xs text-slate-500">
-            {session.user?.email}
-          </span>
-        </div>
+<div className="w-8 h-8 bg-cyan-600 text-white flex items-center justify-center rounded-full">
+{session.user?.name?.charAt(0)}
+</div>
 
-        {/* Divider */}
-        <div className="h-6 w-px bg-slate-300"></div>
+<span className="hidden md:block text-sm">
+{session.user?.email}
+</span>
 
-        {/* Logout */}
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="text-sm font-medium text-slate-600 hover:text-red-500 transition"
-        >
-          Logout
-        </button>
+</button>
 
-      </div>
+{open && (
 
-    </div>
-  );
+<div className="absolute right-0 mt-3 bg-white border rounded-lg shadow-lg w-48">
+
+<button
+className="block w-full text-left px-4 py-2 hover:bg-slate-100"
+>
+Profile
+</button>
+
+<button
+className="block w-full text-left px-4 py-2 hover:bg-slate-100"
+>
+Dashboard
+</button>
+
+<button
+onClick={()=>signOut({callbackUrl:"/"})}
+className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-500"
+>
+Logout
+</button>
+
+</div>
+
+)}
+
+</div>
+
+)
 }
