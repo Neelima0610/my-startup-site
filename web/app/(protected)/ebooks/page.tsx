@@ -1,3 +1,5 @@
+import BackButton from "@/components/BackButton";
+  
 export default function EbooksPage(){
 
       const books = [
@@ -46,43 +48,48 @@ export default function EbooksPage(){
       ]
 
       return(
-
-      <div className="max-w-7xl mx-auto py-20 grid md:grid-cols-3 gap-12">
-
-        {books.map((book)=>(
-        <a
-          key={book.id}
-          href={book.link}
-          target="_blank"
-          className="group perspective block w-[300px]"
-        >
-          <div className="book h-[420px]">
-
-            <div className="book-face flex items-center justify-center bg-gray-300 rounded-xl p-1 shadow-lg">
-
-              <img
-                src={book.cover}
-                alt={book.title}
-                className="h-full max-h-[360px] object-contain rounded-lg shadow-md border-4 border-white"
-              />
-
-            </div>
-
-            <div className="book-face book-back bg-white rounded-xl shadow-xl p-6 flex flex-col justify-center">
-              <h3 className="text-lg font-semibold mb-3">{book.title}</h3>
-
-              <p className="text-sm text-slate-600">{book.description}</p>
-
-              <span className="mt-6 text-cyan-600 font-semibold">
-                Read on Amazon →
-              </span>
-            </div>
-
+        <div className="w-full mx-auto px-6 py-10 bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100">
+          {/* Top Navigation */}
+          <div className="flex items-center justify-between mb-6 right-6">
+            <BackButton title="" backHref="/dashboard" />
           </div>
-        </a>
-        ))}
 
+          <div className="max-w-7xl mx-auto py-20 grid md:grid-cols-3 gap-12">
+
+            {books.map((book)=>(
+            <a
+              key={book.id}
+              href={book.link}
+              target="_blank"
+              className="group perspective block w-[300px]"
+            >
+              <div className="book h-[420px]">
+
+                <div className="book-face flex items-center justify-center bg-gray-300 rounded-xl p-1 shadow-lg">
+
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="h-full max-h-[360px] object-contain rounded-lg shadow-md border-4 border-white"
+                  />
+
+                </div>
+
+                <div className="book-face book-back bg-white rounded-xl shadow-xl p-6 flex flex-col justify-center">
+                  <h3 className="text-lg font-semibold mb-3">{book.title}</h3>
+
+                  <p className="text-sm text-slate-600">{book.description}</p>
+
+                  <span className="mt-6 text-cyan-600 font-semibold">
+                    Read on Amazon →
+                  </span>
+                </div>
+
+              </div>
+            </a>
+            ))}
+
+            </div>
         </div>
-
-      )
+  )
 }

@@ -9,7 +9,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react"
 import UserNav from "./UserNav";
 import MobileMenu from "./MobileMenu";
-import CommandPalette from "./CommandPalette";
 
 export default function TopNav() {
   const { data: session } = useSession();
@@ -21,37 +20,53 @@ export default function TopNav() {
 
   const dashboardLink = session ? "/dashboard" : "/login";
 
-  const navItem = (href: string, label: string) => (
-    <Link
-      href={href}
-      className={`transition hover:text-cyan-600 ${
-        pathname === href ? "text-cyan-600 font-semibold" : ""
-      }`}
-    >
-      {label}
-    </Link>
-  );
+  const navItem = (href: string, label: string) => {
+    // Always enable Home link
+    if (!session && label !== "Home") {
+      return (
+        <span className="text-gray-400 cursor-not-allowed">
+          {label}
+        </span>
+      );
+    }
 
+    return (
+      <Link
+        href={href}
+        className={`transition hover:text-cyan-600 ${
+          pathname === href ? "text-white-600 font-semibold" : ""
+        }`}
+      >
+        {label}
+      </Link>
+    );  
+  };
   return (
-    <header className="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border-b border-slate-700 sticky top-0 z-50 backdrop-blur-xl">
+    <header className="w-full bg-gradient-to-r bg-gradient-to-br bg-slate-700 text-white border-b border-slate-700 sticky top-0 z-50 backdrop-blur-xl">
 
-      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 py-4">
 
         {/* Logo */}
-        <div>
-          <Link href="/" className="text-xl font-bold text-white">
-            IdeaVault<span className="text-cyan-400">Labs</span>
-          </Link>
-        </div>
+        <Link href={session ? "/" : "#"} className="flex items-center gap-2">
+        <img
+          src="/logo.png"
+          alt="IdeaVault Labs"
+          className="h-20 w-20 md:h-15 md:w-15 object-contain"
+        />
+        <span className="hidden md:block text-lg font-bold text-white">
+          IdeaVault<span className="text-cyan-400">Labs</span>
+        </span>
+      </Link>
 
         {/* Desktop Nav */}
-        <nav className="flex justify-center gap-10 text-sm font-medium text-white">
+        <nav className="hidden md:flex justify-center gap-10 text-sm font-medium text-white">
 
-          {navItem("/products","Products")}
+          {navItem("/","Home")}
+          
+          {navItem("/tools","Products")}
 
           {/* Mega Menu */}
-          <div
-            className="relative"
+          <div className={`relative ${!session ? "pointer-events-none opacity-50" : ""}`}
             onMouseEnter={()=>setExtOpen(true)}
             onMouseLeave={()=>setExtOpen(false)}
           >
@@ -96,15 +111,7 @@ export default function TopNav() {
         </nav>
 
         {/* Right Side */}
-        <div className="flex justify-end items-center gap-4">
-
-          {/* Command palette */}
-          <button
-            onClick={()=>setCmdOpen(true)}
-            className="p-2 rounded hover:bg-slate-100"
-          >
-            <Command size={18}/>
-          </button>
+        <div className="flex items-center gap-2 md:gap-4">          
 
           {session ? (
             <UserNav />
@@ -120,17 +127,16 @@ export default function TopNav() {
           {/* Mobile menu */}
           <button
             onClick={()=>setMenuOpen(true)}
-            className="md:hidden"
+            className="md:hidden p-2 rounded hover:bg-slate-700"
           >
-            <Menu/>
+            <Menu size={22}/>
           </button>
 
         </div>
 
       </div>
 
-      <MobileMenu open={menuOpen} setOpen={setMenuOpen}/>
-      <CommandPalette open={cmdOpen} setOpen={setCmdOpen}/>
+      <MobileMenu open={menuOpen} setOpen={setMenuOpen}/>      
 
     </header>
   );
