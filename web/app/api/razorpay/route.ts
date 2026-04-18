@@ -13,6 +13,19 @@ const PRICE = 19900; // ₹199 in paise
 
 export async function POST(req: Request) {
   try {
+     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error("❌ Razorpay env missing");
+      return NextResponse.json(
+        { error: "Payment config error" },
+        { status: 500 }
+      );
+    }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+    
     const { email } = await req.json();
 
     // ✅ Validate email
