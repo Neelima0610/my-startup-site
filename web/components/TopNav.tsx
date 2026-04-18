@@ -51,11 +51,11 @@ export default function TopNav() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 text-sm font-medium">
 
-          {navItem("/", "Home")}
+          {/* {navItem("/", "Home")}
           {navItem("/tools", "Products")}
 
           {/* Extensions Dropdown */}
-          <div
+          {/* <div
             className="relative"
             onMouseEnter={() => setExtOpen(true)}
             onMouseLeave={() => setExtOpen(false)}
@@ -91,10 +91,10 @@ export default function TopNav() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </div> */}
 
           {/* {navItem("/elearning", "eLearning")} */}
-          {navItem("/ebooks", "eBooks")}
+          {/* {navItem("/ebooks", "eBooks")} */}
         </nav>
 
         {/* Right Side */}

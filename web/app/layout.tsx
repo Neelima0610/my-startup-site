@@ -2,9 +2,9 @@
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import TopNav from "@/components/TopNav";
+import "./globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

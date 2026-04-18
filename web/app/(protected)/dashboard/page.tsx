@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
 
 export default function Home() {
   const router = useRouter();
@@ -16,7 +17,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 flex flex-col items-center px-6 py-16">
-      
+      {/* Top Navigation */}
+      <div className="w-full max-w-5xl mb-4 flex justify-start">
+        <BackButton backHref="/" />
+      </div>
       {/* HEADER */}
       <div className="text-center max-w-2xl mb-10">
         <h1 className="text-4xl font-bold text-slate-800 mb-4">

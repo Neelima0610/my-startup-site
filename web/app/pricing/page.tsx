@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { RazorpayResponse } from "@/types/razorpay";
+import BackButton from "@/components/BackButton";
 
 export default function PricingPage() {
   const [email, setEmail] = useState("");
@@ -99,6 +100,9 @@ export default function PricingPage() {
 
   return (
     <div style={styles.container}>
+      <div className="w-full max-w-5xl mb-4 flex justify-start">
+        <BackButton backHref="/" />
+      </div>
       <h1 style={styles.title}>IdeaVault Pro</h1>
 
       <div style={styles.card}>
