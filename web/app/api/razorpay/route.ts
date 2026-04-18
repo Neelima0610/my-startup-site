@@ -8,7 +8,7 @@ const PRICE = 19900; // ₹199 in paise
 
 export async function POST(req: Request) {
   try {
-     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+     if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       console.error("❌ Razorpay env missing");
       return NextResponse.json(
         { error: "Payment config error" },
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     }
 
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     // ❗ Env safety
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       console.error("Missing Razorpay env variables");
       return NextResponse.json(
         { error: "Payment system not configured" },
