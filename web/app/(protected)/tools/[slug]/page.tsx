@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import BackButton from "../../../../components/BackButton";
-import NavigationHeader from "@/components/NavigationHeader";
 
 interface ToolPageProps {
   params: {
@@ -35,21 +35,33 @@ const TOOL_DATA: Record<
 
 export default async function ToolDetailPage({ params }: ToolPageProps) {
   const session = await getServerSession(authOptions);
-  const isProUser = !!session?.user?.isPro;
 
+  if (!session) {
+    redirect("/login");
+  }
+
+  const isProUser = !!session?.user?.isPro;
   const tool = TOOL_DATA[params.slug];
 
   if (!tool) {
-    return <div className="p-6">Tool not found</div>;
+    return (
+      <div className="p-6 text-center text-gray-600">
+        Tool not found
+      </div>
+    );
   }
 
   return (
     <div className="p-8 max-w-3xl mx-auto">
+
       <BackButton backHref="/tools" />
-      <h1 className="text-3xl font-bold mb-4">{tool.name}</h1>
+
+      <h1 className="text-3xl font-bold mb-2 text-slate-800">
+        {tool.name}
+      </h1>
 
       <p className="text-gray-600 mb-8">
-        Explore what you can do with {tool.name}.
+        Explore features and capabilities of {tool.name}.
       </p>
 
       {/* FREE FEATURES */}
@@ -57,7 +69,8 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
         <h2 className="text-xl font-semibold mb-3">
           Free Features
         </h2>
-        <ul className="space-y-2">
+
+        <ul className="space-y-2 text-gray-700 text-sm">
           {tool.freeFeatures.map((feature) => (
             <li key={feature}>✅ {feature}</li>
           ))}
@@ -70,7 +83,7 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
           Pro Features
         </h2>
 
-        <ul className="space-y-2 mb-4">
+        <ul className="space-y-2 mb-6 text-gray-700 text-sm">
           {tool.proFeatures.map((feature) => (
             <li key={feature}>
               {isProUser ? "🚀" : "🔒"} {feature}
@@ -78,15 +91,20 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
           ))}
         </ul>
 
-        {!isProUser && (
-          <button
-            disabled
-            className="bg-yellow-400 text-white px-4 py-2 rounded opacity-70 cursor-not-allowed"
+        {!isProUser ? (
+          <a
+            href="/pricing"
+            className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg transition"
           >
-            Upgrade to Pro to unlock
-          </button>
+            Upgrade to Pro (₹199)
+          </a>
+        ) : (
+          <p className="text-green-600 font-medium">
+            You are a Pro user 🚀
+          </p>
         )}
       </div>
+
     </div>
   );
 }

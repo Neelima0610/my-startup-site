@@ -5,18 +5,42 @@ import { prisma } from "@/lib/prisma";
 export const runtime = "nodejs";
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  key_id: process.env.RAZORPAY_KEY_ID ?? "",
+  key_secret: process.env.RAZORPAY_KEY_SECRET ?? "",
 });
+
+const PRICE = 19900; // ₹199 in paise
 
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    // ✅ Validate email
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "Valid email required" },
+        { status: 400 }
+      );
     }
 
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // ❗ Env safety
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error("Missing Razorpay env variables");
+      return NextResponse.json(
+        { error: "Payment system not configured" },
+        { status: 500 }
+      );
+    }
+
+    // 🔍 Check existing license
     const existing = await prisma.license.findFirst({
       where: {
         email,
@@ -29,8 +53,10 @@ export async function POST(req: Request) {
         alreadyPurchased: true,
       });
     }
+
+    // 🧾 Create order
     const order = await razorpay.orders.create({
-      amount: 19900, // ₹199
+      amount: PRICE,
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: {
@@ -40,11 +66,15 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       orderId: order.id,
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? "",
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Order error:", error);
-    return NextResponse.json({ error: "Order failed" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Order failed" },
+      { status: 500 }
+    );
   }
 }

@@ -6,10 +6,14 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
+// ✅ Strong license key generator
 function generateLicenseKey() {
-  return "VSX-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+  return (
+    "VSX-" +
+    crypto.randomBytes(5).toString("hex").toUpperCase() // 10 chars secure
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -22,11 +26,27 @@ export async function POST(req: NextRequest) {
       razorpay_signature,
     } = body;
 
-    // 🔐 Verify Razorpay signature
-    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    // ✅ Validate input
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return NextResponse.json(
+        { error: "Invalid payload" },
+        { status: 400 }
+      );
+    }
+
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      console.error("Missing Razorpay secret");
+      return NextResponse.json(
+        { error: "Server misconfigured" },
+        { status: 500 }
+      );
+    }
+
+    // 🔐 Verify signature
+    const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
 
     const expected = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(sign)
       .digest("hex");
 
@@ -37,7 +57,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔍 Fetch order to get email
+    // 🔁 Idempotency check (VERY IMPORTANT)
+    const existingLicense = await prisma.license.findUnique({
+      where: { orderId: razorpay_order_id },
+    });
+
+    if (existingLicense) {
+      return NextResponse.json({ success: true });
+    }
+
+    // 🔍 Fetch order
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID!,
       key_secret: process.env.RAZORPAY_KEY_SECRET!,
@@ -56,10 +85,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔑 Generate license key
+    // 🔑 Generate license
     const licenseKey = generateLicenseKey();
 
-    // 💾 Save to DB
+    // 💾 Save (with unique constraint safety)
     await prisma.license.create({
       data: {
         key: licenseKey,
@@ -68,7 +97,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 📩 Send Email
+    // 📩 Send email
     await resend.emails.send({
       from: "IdeaVault <onboarding@resend.dev>",
       to: email,
@@ -80,19 +109,15 @@ export async function POST(req: NextRequest) {
         <p><b>Your License Key:</b></p>
         <h3 style="color:#6366f1;">${licenseKey}</h3>
 
-        <p>👉 Copy this key and paste it inside your VS Extension to unlock Pro features.</p>
-
-        <br/>
-        <p>Enjoy building! 🚀</p>
+        <p>👉 Paste this key in your VS Extension to unlock Pro.</p>
       `,
     });
 
-    return NextResponse.json({
-      success: true,
-    });
+    return NextResponse.json({ success: true });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Verify error:", error);
+
     return NextResponse.json(
       { error: "Verification failed" },
       { status: 500 }

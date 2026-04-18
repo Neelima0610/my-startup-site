@@ -4,17 +4,41 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
 
+    // ✅ Validate input
+    if (!email || typeof email !== "string") {
+      return NextResponse.json(
+        { error: "Valid email required" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Basic email format check
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) {
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // ❗ Ensure API key exists
+    if (!process.env.RESEND_API_KEY) {
+      console.error("Missing RESEND_API_KEY");
+      return NextResponse.json(
+        { error: "Email service not configured" },
+        { status: 500 }
+      );
+    }
+
     const license = await prisma.license.findFirst({
       where: { email },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
     });
 
     if (!license) {
@@ -37,7 +61,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
 
-  } catch (err) {
+  } catch (err: unknown) {
+    console.error("Resend license error:", err);
+
     return NextResponse.json(
       { error: "Failed to resend" },
       { status: 500 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import BackButton from "@/components/BackButton";
 
 export default function Home() {
   const router = useRouter();
@@ -11,20 +10,28 @@ export default function Home() {
     { name: "VS Extensions", href: "/extensions/visual-studio" },
     { name: "VS Code Extensions", href: "/extensions/vs-code" },
     { name: "Azure DevOps", href: "/extensions/azure-devops" },
-    { name: "Study / Interview Prep", href: "/elearning" },
+    // { name: "Study / Interview Prep", href: "/elearning" },
     { name: "eBooks", href: "/ebooks" },
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 flex flex-col items-center justify-center px-6 py-16">
-   
+    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 flex flex-col items-center px-6 py-16">
+      
       {/* HEADER */}
-      <div className="text-center max-w-2xl mb-14">
+      <div className="text-center max-w-2xl mb-10">
         <h1 className="text-4xl font-bold text-slate-800 mb-4">
           Welcome to IdeaVault Labs
         </h1>
         <p className="text-slate-600 text-lg">
-          Explore our innovative developer tools, extensions, study materials, and eBooks—all in one place.
+          Your hub for developer tools, Visual Studio extensions, learning resources, and premium content.
+        </p>
+      </div>
+
+      {/* INFO BOX (IMPORTANT FOR TRUST) */}
+      <div className="bg-white border border-gray-200 rounded-xl shadow p-6 max-w-3xl text-center mb-12">
+        <p className="text-gray-700 text-sm">
+          You are logged into your IdeaVault account. From here, you can access purchased products,
+          explore tools, and upgrade your plan for premium features.
         </p>
       </div>
 
@@ -46,10 +53,21 @@ export default function Home() {
         ))}
       </div>
 
+      {/* SUPPORT / CONTACT (VERY IMPORTANT) */}
+      <div className="mt-16 text-center text-sm text-slate-600">
+        Need help? Contact us at{" "}
+        <a
+          href="mailto:support@ideavaultlabs.com"
+          className="text-blue-600 underline"
+        >
+          support@ideavaultlabs.com
+        </a>
+      </div>
+
       {/* FOOTER */}
-      <footer className="mt-16 text-sm text-slate-500 text-center">
-        IdeaVault © {new Date().getFullYear()} — Innovative tools for developers
-      </footer>    
+      <footer className="mt-10 text-xs text-slate-500 text-center">
+        © {new Date().getFullYear()} IdeaVault Labs — All rights reserved
+      </footer>
     </main>
   );
 }

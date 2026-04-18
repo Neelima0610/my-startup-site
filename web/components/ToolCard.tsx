@@ -14,43 +14,55 @@ export default function ToolCard({
   isProUser,
 }: ToolCardProps) {
   return (
-    <div className="border rounded-xl p-5 shadow hover:shadow-lg transition">
-      <h2 className="text-xl font-bold mb-1">{name}</h2>
-      <p className="text-gray-600 mb-4">{description}</p>
+    <div className="border rounded-2xl p-6 shadow-md hover:shadow-xl transition bg-white">
 
-      <div className="flex gap-2 mb-4">
-        <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
-          Free
-        </span>
-        <span className="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
-          Pro
-        </span>
+      {/* Title */}
+      <h2 className="text-xl font-bold mb-2">{name}</h2>
+
+      {/* Description */}
+      <p className="text-gray-600 text-sm mb-4">{description}</p>
+
+      {/* Status Badge */}
+      <div className="mb-4">
+        {isProUser ? (
+          <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">
+            Pro Active
+          </span>
+        ) : (
+          <span className="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+            Free Plan
+          </span>
+        )}
       </div>
 
+      {/* Action */}
       {isProUser ? (
         <Link
           href={`/tools/${slug}`}
-          className="block text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
           Open Tool
         </Link>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
+
           <Link
             href={`/tools/${slug}`}
-            className="block text-center bg-gray-200 py-2 rounded hover:bg-gray-300"
+            className="block text-center bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200"
           >
-            Open Free Version
+            Try Free Version
           </Link>
 
-          <button
-            disabled
-            className="w-full bg-yellow-400 text-white py-2 rounded opacity-60 cursor-not-allowed"
+          <Link
+            href="/pricing"
+            className="block text-center bg-yellow-400 text-black py-2 rounded-lg hover:bg-yellow-300 font-medium"
           >
-            Pro Feature 🔒
-          </button>
+            Upgrade to Pro (₹199)
+          </Link>
+
         </div>
       )}
+
     </div>
   );
 }

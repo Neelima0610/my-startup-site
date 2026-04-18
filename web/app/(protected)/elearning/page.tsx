@@ -51,19 +51,31 @@ const resources: Resource[] = [
 
 export default function ELearning() {
   return (
-    <main className="min-h-screen bg-slate-50 p-6 md:p-12 bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100">      
+    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 p-6 md:p-12">
+      
       {/* Top Navigation */}
-      <div className="flex items-center justify-between mb-6 right-6">
-        <BackButton title="" backHref="/dashboard" />
+      <div className="flex items-center justify-between mb-6">
+        <BackButton backHref="/dashboard" />
       </div>
+
       <div className="max-w-7xl mx-auto">
+        
+        {/* HEADER */}
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
           eLearning & Interview Prep
         </h1>
-        <p className="text-gray-600 mb-8">
-          Curated learning resources for beginners entering the IT field. Explore tutorials, guides, and interview preparation content.
+
+        <p className="text-gray-600 mb-6">
+          Explore curated tutorials, guides, and interview preparation resources designed for developers and beginners entering the IT field.
         </p>
 
+        {/* IMPORTANT CONTEXT (FOR RAZORPAY + USERS) */}
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mb-8 text-sm text-gray-700 shadow">
+          Some resources may be available as part of <strong>IdeaVault Pro</strong>.  
+          Premium content and advanced materials are unlocked after purchase.
+        </div>
+
+        {/* GRID */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {resources.map((r) => (
             <Link
@@ -71,12 +83,35 @@ export default function ELearning() {
               href={r.href}
               className="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-transform duration-200 border border-gray-200"
             >
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">{r.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                {r.title}
+              </h2>
+
               <p className="text-gray-600 mb-2">{r.description}</p>
-              <span className="text-sm text-cyan-600 font-medium">{r.category}</span>
+
+              <span className="text-sm text-cyan-600 font-medium">
+                {r.category}
+              </span>
             </Link>
           ))}
         </div>
+
+        {/* SUPPORT */}
+        <div className="mt-16 text-center text-sm text-slate-600">
+          Need help? Contact{" "}
+          <a
+            href="mailto:support@ideavaultlabs.com"
+            className="text-blue-600 underline"
+          >
+            support@ideavaultlabs.com
+          </a>
+        </div>
+
+        {/* FOOTER */}
+        <footer className="mt-10 text-xs text-slate-500 text-center">
+          © {new Date().getFullYear()} IdeaVault Labs
+        </footer>
+
       </div>
     </main>
   );

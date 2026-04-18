@@ -5,11 +5,18 @@ export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { key, machineId } = await req.json();
+    const body = await req.json();
 
+    const key = typeof body.key === "string" ? body.key.trim() : null;
+    const machineId =
+      typeof body.machineId === "string"
+        ? body.machineId.trim().toLowerCase()
+        : null;
+
+    // ✅ Validate input
     if (!key || !machineId) {
       return NextResponse.json(
-        { valid: false, error: "Missing key or machineId" },
+        { valid: false, error: "Invalid key or machineId" },
         { status: 400 }
       );
     }
@@ -36,24 +43,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ valid: true });
     }
 
-    // 🔢 Check activation limit
-    if (license.activations.length < license.maxActivations) {
-      await prisma.activation.create({
+    // ⚠️ Use transaction to prevent race condition
+    const activationResult = await prisma.$transaction(async (tx) => {
+      const freshLicense = await tx.license.findUnique({
+        where: { key },
+        include: { activations: true },
+      });
+
+      if (!freshLicense) {
+        throw new Error("License disappeared");
+      }
+
+      if (freshLicense.activations.length >= freshLicense.maxActivations) {
+        return { valid: false, error: "Activation limit reached" };
+      }
+
+      await tx.activation.create({
         data: {
           licenseKey: key,
           machineId,
         },
       });
 
-      return NextResponse.json({ valid: true });
-    }
-
-    return NextResponse.json({
-      valid: false,
-      error: "Activation limit reached",
+      return { valid: true };
     });
 
-  } catch (error) {
+    return NextResponse.json(activationResult);
+
+  } catch (error: unknown) {
     console.error("Validation error:", error);
 
     return NextResponse.json(

@@ -1,6 +1,5 @@
 "use client";
 
-import UserNav from "@/components/UserNav";
 import { motion } from "framer-motion";
 
 export default function ToolsLayout({
@@ -8,13 +7,12 @@ export default function ToolsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (    
+  return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.25 }}
-    >   
+    >
       {children}
     </motion.div>
   );

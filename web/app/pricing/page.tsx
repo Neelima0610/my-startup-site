@@ -1,36 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type RazorpayResponse = {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
-};
-
-type RazorpayInstance = {
-  open: () => void;
-};
-
-type RazorpayConstructor = new (options: {
-  key: string;
-  order_id: string;
-  name: string;
-  description: string;
-  handler: (response: RazorpayResponse) => void;
-  prefill: {
-    email?: string;
-  };
-  theme: {
-    color: string;
-  };
-}) => RazorpayInstance;
-
-declare global {
-  interface Window {
-    RazorpayConstructor: RazorpayConstructor;
-  }
-}
+import type { RazorpayResponse } from "@/types/razorpay";
 
 export default function PricingPage() {
   const [email, setEmail] = useState("");
@@ -72,14 +43,7 @@ export default function PricingPage() {
       const data = await res.json();
 
       if (data.alreadyPurchased) {
-        alert(
-          "You already have a valid license.\n\nPlease check your email or use your existing key in the extension."
-        );
-        return;
-      }
-
-      if (!data.orderId) {
-        alert("Failed to create order");
+        alert("You already own this product. Please check your email.");
         return;
       }
 
@@ -88,7 +52,7 @@ export default function PricingPage() {
         order_id: data.orderId,
 
         name: "IdeaVault Pro",
-        description: "One-time purchase",
+        description: "Lifetime license for developer tools and extensions",
 
         handler: async function (response: RazorpayResponse) {
           const verify = await fetch("/api/razorpay/verify", {
@@ -103,10 +67,10 @@ export default function PricingPage() {
 
           if (result.success) {
             alert(
-              "✅ Payment successful!\n\nYour license key has been sent to your email.\n\nPlease check your inbox."
+              "✅ Payment successful!\n\nYour license key has been sent to your email."
             );
           } else {
-            alert("Payment done, but something went wrong");
+            alert("Payment received but verification failed. Contact support.");
           }
         },
 
@@ -118,7 +82,10 @@ export default function PricingPage() {
           color: "#6366f1",
         },
       };
-
+      if (!window.Razorpay) {
+        alert("Payment system not loaded. Please refresh and try again.");
+        return;
+      }
       const rzp = new window.Razorpay(options);
       rzp.open();
 
@@ -132,18 +99,27 @@ export default function PricingPage() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Upgrade to Pro</h1>
+      <h1 style={styles.title}>IdeaVault Pro</h1>
 
       <div style={styles.card}>
-        <h2>IdeaVault Pro</h2>
+        <p style={styles.subtitle}>
+          One-time purchase for lifetime access
+        </p>
 
-        <p style={styles.price}>₹199 (One-time)</p>
+        <p style={styles.price}>₹199</p>
 
         <ul style={styles.features}>
-          <li>✔ Unlimited Usage</li>
-          <li>✔ Premium Features</li>
-          <li>✔ Priority Support</li>
+          <li>✔ Full access to all premium tools</li>
+          <li>✔ Visual Studio & VS Code extensions</li>
+          <li>✔ Azure DevOps utilities</li>
+          <li>✔ Lifetime updates</li>
+          <li>✔ Priority email support</li>
         </ul>
+
+        {/* DELIVERY INFO */}
+        <p style={styles.info}>
+          After successful payment, your license key will be delivered instantly to your email.
+        </p>
 
         <input
           type="email"
@@ -154,29 +130,29 @@ export default function PricingPage() {
         />
 
         <button onClick={handlePay} style={styles.button} disabled={loading}>
-          {loading ? "Processing..." : "Buy Now"}
+          {loading ? "Processing..." : "Pay ₹199"}
         </button>
-        <br / ><br / >
-        <button
-        onClick={async () => {
-          if (!email) {
-            alert("Enter your email first");
-            return;
-          }
 
-          await fetch("/api/license/resend", {
-            method: "POST",
-            body: JSON.stringify({ email }),
-          });
+        {/* TRUST + POLICY */}
+        <p style={styles.trust}>
+          Secure payment powered by Razorpay
+        </p>
 
-          alert("License sent to your email");
-        }}
-        style={styles.button}
-        disabled={loading}
-      >
-        Resend License
-      </button>
-            </div>
+        <p style={styles.policy}>
+          By proceeding, you agree to our{" "}
+          <a href="/terms">Terms</a>,{" "}
+          <a href="/privacy">Privacy Policy</a>, and{" "}
+          <a href="/refund">Refund Policy</a>.
+        </p>
+      </div>
+
+      {/* SUPPORT */}
+      <p style={styles.support}>
+        Need help? Contact{" "}
+        <a href="mailto:support@ideavaultlabs.com">
+          support@ideavaultlabs.com
+        </a>
+      </p>
     </div>
   );
 }
@@ -189,10 +165,15 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     minHeight: "100vh",
     background: "#f9fafb",
+    padding: "20px",
   },
   title: {
     fontSize: "32px",
-    marginBottom: "20px",
+    marginBottom: "10px",
+  },
+  subtitle: {
+    fontSize: "14px",
+    color: "#6b7280",
   },
   card: {
     background: "#fff",
@@ -200,10 +181,10 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: "12px",
     boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
     textAlign: "center",
-    width: "320px",
+    width: "340px",
   },
   price: {
-    fontSize: "24px",
+    fontSize: "28px",
     margin: "10px 0",
     fontWeight: "bold",
   },
@@ -211,6 +192,12 @@ const styles: Record<string, React.CSSProperties> = {
     listStyle: "none",
     padding: 0,
     margin: "20px 0",
+    textAlign: "left",
+  },
+  info: {
+    fontSize: "13px",
+    color: "#374151",
+    marginBottom: "10px",
   },
   input: {
     padding: "10px",
@@ -228,5 +215,20 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#6366f1",
     color: "#fff",
     cursor: "pointer",
+  },
+  trust: {
+    fontSize: "12px",
+    marginTop: "10px",
+    color: "#6b7280",
+  },
+  policy: {
+    fontSize: "12px",
+    marginTop: "8px",
+    color: "#6b7280",
+  },
+  support: {
+    marginTop: "20px",
+    fontSize: "13px",
+    color: "#374151",
   },
 };
