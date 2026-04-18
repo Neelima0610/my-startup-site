@@ -62,3 +62,30 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model License {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  email     String
+  orderId   String   @unique
+
+  isActive  Boolean  @default(true)
+
+  maxActivations Int @default(2)
+
+  createdAt DateTime @default(now())
+
+  activations Activation[]
+}
+
+model Activation {
+  id         String   @id @default(cuid())
+  licenseKey String
+  machineId  String
+
+  createdAt  DateTime @default(now())
+
+  license License @relation(fields: [licenseKey], references: [key])
+
+  @@unique([licenseKey, machineId])
+}

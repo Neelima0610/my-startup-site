@@ -1,42 +1,50 @@
 import Razorpay from "razorpay";
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-const key_id = process.env.RAZORPAY_KEY_ID;
-const key_secret = process.env.RAZORPAY_KEY_SECRET;
-
-if (!key_id || !key_secret) {
-  throw new Error("Razorpay `key_id` or `key_secret` is missing");
-}
+export const runtime = "nodejs";
 
 const razorpay = new Razorpay({
-  key_id,
-  key_secret
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    const { email } = await req.json();
 
-    if (!session || !session.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    const subscription = await razorpay.subscriptions.create({
-      plan_id: process.env.RAZORPAY_PLAN_ID!, // IdeaVault Pro plan
-      customer_notify: 1,
-      total_count: 12, // 12 months (monthly billing)
+    const existing = await prisma.license.findFirst({
+      where: {
+        email,
+        isActive: true,
+      },
+    });
+
+    if (existing) {
+      return NextResponse.json({
+        alreadyPurchased: true,
+      });
+    }
+    const order = await razorpay.orders.create({
+      amount: 19900, // ₹199
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      notes: {
+        email,
+      },
     });
 
     return NextResponse.json({
-      subscriptionId: subscription.id,
+      orderId: order.id,
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     });
+
   } catch (error) {
-    console.error("Razorpay subscription error:", error);
-    return NextResponse.json(
-      { error: "Failed to create subscription" },
-      { status: 500 }
-    );
+    console.error("Order error:", error);
+    return NextResponse.json({ error: "Order failed" }, { status: 500 });
   }
 }
