@@ -4,11 +4,6 @@ import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID ?? "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET ?? "",
-});
-
 const PRICE = 19900; // ₹199 in paise
 
 export async function POST(req: Request) {
@@ -25,7 +20,7 @@ export async function POST(req: Request) {
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
-    
+
     const { email } = await req.json();
 
     // ✅ Validate email
