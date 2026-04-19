@@ -10,33 +10,32 @@ const Editor = dynamic(() => import("@monaco-editor/react"), {
 type Tab = "html" | "css" | "js";
 
 export default function PlaygroundPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("html");
+    const [activeTab, setActiveTab] = useState<Tab>("html");
 
-  const [code, setCode] = useState({
-    html: "",
-    css: "",
-    js: "",
-  });
+    const [code, setCode] = useState({
+        html: "",
+        css: "",
+        js: "",
+    });
 
-  const [isPending, startTransition] = useTransition();
+    const [isPending, startTransition] = useTransition();
 
-  // ✅ Safe client-only update (no hydration mismatch)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const data = params.get("code");
+    useEffect(() => {
+    const stored = sessionStorage.getItem("playground-code");
 
-    if (data) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(data));
+    if (stored) {
+        try {
+        const parsed = JSON.parse(stored);
 
         startTransition(() => {
-          setCode(parsed);
+            setCode(parsed); // ✅ no warning now
         });
-      } catch {
+
+        } catch {
         console.error("Invalid code");
-      }
+        }
     }
-  }, []);
+    }, []);
 
   const srcDoc = `
     <html>

@@ -1,9 +1,7 @@
 "use client";
 
 import CodeBlock from "@/components/CodeBlock";
-import BackButton from "@/components/BackButton";
 import LessonNavigation from "@/components/LessonNavigation";
-import CodePlayground from "@/components/CodePlayground";
 import LearningLayout from "@/components/LearningLayout";
 
 export default function HtmlTagsPage() {

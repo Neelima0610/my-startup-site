@@ -35,8 +35,8 @@ export default function CodePlayground({ initialCode }: Props) {
     };
 
     const openInNewWindow = () => {
-        const encoded = encodeURIComponent(JSON.stringify(code));
-        window.open(`/playground?code=${encoded}`, "_blank");
+        sessionStorage.setItem("playground-code", JSON.stringify(code));
+        window.open("/playground", "_blank");
     };
 
   return (
