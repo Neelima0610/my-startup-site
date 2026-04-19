@@ -12,8 +12,7 @@ interface NavigationHeaderProps {
 export default function NavigationHeader({
   title,
   backHref = "/tools",
-}: NavigationHeaderProps) {
-  const router = useRouter();
+}: NavigationHeaderProps) {  
 
   return (
     <motion.div

@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession, signIn } from "next-auth/react";
 import type { RazorpayResponse } from "@/types/razorpay";
 import BackButton from "@/components/BackButton";
 
 export default function PricingPage() {
-  const [email, setEmail] = useState("");
+  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+
+  const email = session?.user?.email || "";
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -15,18 +18,10 @@ export default function PricingPage() {
     document.body.appendChild(script);
   }, []);
 
-  const isValidEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
   const handlePay = async () => {
-    if (!email) {
-      alert("Please enter your email");
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      alert("Please enter a valid email address");
+    if (!session) {
+      alert("Please login to continue");
+      signIn();
       return;
     }
 
@@ -35,204 +30,174 @@ export default function PricingPage() {
 
       const res = await fetch("/api/razorpay", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
 
       if (data.alreadyPurchased) {
-        alert("You already own this product. Please check your email.");
+        alert("You already own this product.");
         return;
       }
 
       const options = {
         key: data.key,
         order_id: data.orderId,
-
         name: "IdeaVault Pro",
-        description: "Lifetime license for developer tools and extensions",
+        description: "Lifetime developer tools",
 
         handler: async function (response: RazorpayResponse) {
           const verify = await fetch("/api/razorpay/verify", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(response),
           });
 
           const result = await verify.json();
 
           if (result.success) {
-            alert(
-              "✅ Payment successful!\n\nYour license key has been sent to your email."
-            );
+            alert("✅ Payment successful!");
           } else {
-            alert("Payment received but verification failed. Contact support.");
+            alert("Verification failed.");
           }
         },
 
-        prefill: {
-          email,
-        },
-
-        theme: {
-          color: "#6366f1",
-        },
+        prefill: { email },
+        theme: { color: "#6366f1" },
       };
-      if (!window.Razorpay) {
-        alert("Payment system not loaded. Please refresh and try again.");
-        return;
-      }
+
       const rzp = new window.Razorpay(options);
       rzp.open();
-
     } catch (err) {
       console.error(err);
-      alert("Something went wrong");
+      alert("Payment failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div className="w-full max-w-5xl mb-4 flex justify-start">
+    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 px-6 py-16">
+
+      {/* Back */}
+      <div className="max-w-6xl mx-auto mb-6">
         <BackButton backHref="/" />
       </div>
-      <h1 style={styles.title}>IdeaVault Pro</h1>
 
-      <div style={styles.card}>
-        <p style={styles.subtitle}>
-          One-time purchase for lifetime access
-        </p>
-
-        <p style={styles.price}>₹199</p>
-
-        <ul style={styles.features}>
-          <li>✔ Full access to all premium tools</li>
-          <li>✔ Visual Studio & VS Code extensions</li>
-          <li>✔ Azure DevOps utilities</li>
-          <li>✔ Lifetime updates</li>
-          <li>✔ Priority email support</li>
-        </ul>
-
-        {/* DELIVERY INFO */}
-        <p style={styles.info}>
-          After successful payment, your license key will be delivered instantly to your email.
-        </p>
-
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-        />
-
-        <button onClick={handlePay} style={styles.button} disabled={loading}>
-          {loading ? "Processing..." : "Pay ₹199"}
-        </button>
-
-        {/* TRUST + POLICY */}
-        <p style={styles.trust}>
-          Secure payment powered by Razorpay
-        </p>
-
-        <p style={styles.policy}>
-          By proceeding, you agree to our{" "}
-          <a href="/terms">Terms</a>,{" "}
-          <a href="/privacy">Privacy Policy</a>, and{" "}
-          <a href="/refund">Refund Policy</a>.
+      {/* Header */}
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          IdeaVault Labs Pricing
+        </h1>
+        <p className="text-gray-600">
+          Choose the plan that fits your workflow
         </p>
       </div>
 
-      {/* SUPPORT */}
-      <p style={styles.support}>
-        Need help? Contact{" "}
-        <a href="mailto:support@ideavaultlabs.com">
-          support@ideavaultlabs.com
-        </a>
+      {/* Pricing Cards */}
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+        {/* PRO PLAN */}
+        <div className="relative bg-white border-2 border-indigo-500 rounded-2xl shadow-xl p-8 flex flex-col">
+
+          <span className="absolute top-0 right-0 bg-indigo-500 text-white text-xs px-3 py-1 rounded-bl-xl rounded-tr-xl">
+            Most Popular
+          </span>
+
+          <h3 className="text-xl font-semibold mb-2">Pro</h3>
+
+          <p className="text-gray-500 text-sm mb-4">
+            Perfect for individual developers
+          </p>
+
+          <p className="text-3xl font-bold mb-6">₹999</p>
+
+          <ul className="space-y-3 text-sm text-gray-700 mb-6">
+            <li>✔ All developer tools</li>
+            <li>✔ VS & VS Code extensions</li>
+            <li>✔ Azure DevOps utilities</li>
+            <li>✔ Lifetime updates</li>
+            <li>✔ Priority support</li>
+          </ul>
+
+          {!session ? (
+            <button
+              onClick={() => signIn()}
+              className="mt-auto bg-indigo-500 text-white py-3 rounded-lg hover:bg-indigo-600 transition"
+            >
+              Login to Purchase
+            </button>
+          ) : (
+            <button
+              onClick={handlePay}
+              disabled={loading}
+              className="mt-auto bg-indigo-500 text-white py-3 rounded-lg hover:bg-indigo-600 transition"
+            >
+              {loading ? "Processing..." : "Buy Now"}
+            </button>
+          )}
+        </div>
+
+        {/* TEAM PLAN */}
+        <div className="bg-white border rounded-2xl shadow-lg p-8 flex flex-col">
+
+          <h3 className="text-xl font-semibold mb-2">Team</h3>
+
+          <p className="text-gray-500 text-sm mb-4">
+            For small teams & startups
+          </p>
+
+          <p className="text-3xl font-bold mb-6">₹2,999</p>
+
+          <ul className="space-y-3 text-sm text-gray-700 mb-6">
+            <li>✔ Everything in Pro</li>
+            <li>✔ Up to 5 users</li>
+            <li>✔ Shared license</li>
+            <li>✔ Team onboarding support</li>
+          </ul>
+
+          <button
+            onClick={() => alert("Coming soon")}
+            className="mt-auto border border-gray-300 py-3 rounded-lg hover:bg-gray-100 transition"
+          >
+            Coming Soon
+          </button>
+        </div>
+
+        {/* ENTERPRISE PLAN */}
+        <div className="bg-white border rounded-2xl shadow-lg p-8 flex flex-col">
+
+          <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
+
+          <p className="text-gray-500 text-sm mb-4">
+            For large organizations
+          </p>
+
+          <p className="text-3xl font-bold mb-6">Custom</p>
+
+          <ul className="space-y-3 text-sm text-gray-700 mb-6">
+            <li>✔ Unlimited users</li>
+            <li>✔ Dedicated support</li>
+            <li>✔ Custom integrations</li>
+            <li>✔ SLA & onboarding</li>
+          </ul>
+
+          <a
+            href="mailto:support@ideavaultlabs.com"
+            className="mt-auto border border-gray-300 py-3 rounded-lg text-center hover:bg-gray-100 transition"
+          >
+            Contact Sales
+          </a>
+        </div>
+
+      </div>
+
+      {/* Footer note */}
+      <p className="text-center text-sm text-gray-500 mt-12">
+        Secure payments powered by Razorpay
       </p>
-    </div>
+
+    </main>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "100vh",
-    background: "#f9fafb",
-    padding: "20px",
-  },
-  title: {
-    fontSize: "32px",
-    marginBottom: "10px",
-  },
-  subtitle: {
-    fontSize: "14px",
-    color: "#6b7280",
-  },
-  card: {
-    background: "#fff",
-    padding: "30px",
-    borderRadius: "12px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-    textAlign: "center",
-    width: "340px",
-  },
-  price: {
-    fontSize: "28px",
-    margin: "10px 0",
-    fontWeight: "bold",
-  },
-  features: {
-    listStyle: "none",
-    padding: 0,
-    margin: "20px 0",
-    textAlign: "left",
-  },
-  info: {
-    fontSize: "13px",
-    color: "#374151",
-    marginBottom: "10px",
-  },
-  input: {
-    padding: "10px",
-    width: "100%",
-    marginBottom: "12px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    padding: "12px",
-    width: "100%",
-    fontSize: "16px",
-    borderRadius: "8px",
-    border: "none",
-    background: "#6366f1",
-    color: "#fff",
-    cursor: "pointer",
-  },
-  trust: {
-    fontSize: "12px",
-    marginTop: "10px",
-    color: "#6b7280",
-  },
-  policy: {
-    fontSize: "12px",
-    marginTop: "8px",
-    color: "#6b7280",
-  },
-  support: {
-    marginTop: "20px",
-    fontSize: "13px",
-    color: "#374151",
-  },
-};

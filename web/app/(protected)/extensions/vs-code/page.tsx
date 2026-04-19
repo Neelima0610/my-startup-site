@@ -54,7 +54,7 @@ export default function VSCodeExtensions() {
       {/* VALUE LINKING TO PRO */}
       <div className="max-w-4xl mx-auto mt-8 bg-gradient-to-r from-cyan-100 to-amber-100 border border-gray-200 rounded-xl p-4 text-sm text-gray-700">
         Full access to premium VS Code extensions is available with{" "}
-        <strong>IdeaVault Pro (₹199 lifetime)</strong>.
+        <strong>IdeaVault Pro (₹999 lifetime)</strong>.
       </div>
 
       {/* SUPPORT */}

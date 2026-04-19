@@ -51,7 +51,7 @@ export default async function ToolsPage() {
           {!isProUser && (
             <div className="mt-4 bg-white border border-gray-200 rounded-xl p-3 text-sm text-gray-700">
               Unlock full access to all tools with{" "}
-              <strong>IdeaVault Pro (₹199 lifetime)</strong>.
+              <strong>IdeaVault Pro (Starting from ₹999 / lifetime)</strong>.
             </div>
           )}
         </div>

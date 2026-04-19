@@ -135,7 +135,7 @@ export default function ErrorLens() {
               onClick={() => router.push("/pricing")}
               className="px-6 py-2 rounded-xl bg-black text-white"
             >
-              Upgrade to Pro (₹199)
+              Upgrade to Pro (Starts from ₹999)
             </button>
           </div>
         </div>

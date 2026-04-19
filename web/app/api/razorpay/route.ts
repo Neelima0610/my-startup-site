@@ -1,6 +1,8 @@
 import Razorpay from "razorpay";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
@@ -19,9 +21,15 @@ export async function POST(req: Request) {
     const razorpay = new Razorpay({
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
+    });   
 
-    const { email } = await req.json();
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const email = session.user.email;
 
     // ✅ Validate email
     if (!email || typeof email !== "string") {

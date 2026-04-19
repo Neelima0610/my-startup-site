@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/BackButton";
+import BuyMeCoffeeCard from "@/components/BuyMeCoffee";
 
 export default function Home() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function Home() {
     { name: "VS Extensions", href: "/extensions/visual-studio" },
     { name: "VS Code Extensions", href: "/extensions/vs-code" },
     { name: "Azure DevOps", href: "/extensions/azure-devops" },
-    // { name: "Study / Interview Prep", href: "/elearning" },
+    { name: "Study / Interview Prep", href: "/elearning" },
     { name: "eBooks", href: "/ebooks" },
   ];
 
@@ -19,7 +20,7 @@ export default function Home() {
     <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 flex flex-col items-center px-6 py-16">
       {/* Top Navigation */}
       <div className="w-full max-w-5xl mb-4 flex justify-start">
-        <BackButton backHref="/" />
+        <BackButton backHref="/" />        
       </div>
       {/* HEADER */}
       <div className="text-center max-w-2xl mb-10">
@@ -37,6 +38,7 @@ export default function Home() {
           You are logged into your IdeaVault account. From here, you can access purchased products,
           explore tools, and upgrade your plan for premium features.
         </p>
+        <BuyMeCoffeeCard />
       </div>
 
       {/* MENU CARDS */}
