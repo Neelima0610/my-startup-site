@@ -16,7 +16,7 @@ export default function LicensePage() {
                 Software License Agreement
                 </h1>
 
-                <p className="mt-3 text-cyan-100 text-lg max-w-2xl">
+                <p className="mt-3 text-black-100 text-lg max-w-2xl">
                 This agreement governs the use of software, plugins, extensions, utilities,
                 and services developed by IdeaVault Labs.
                 </p>
