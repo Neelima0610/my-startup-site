@@ -85,6 +85,7 @@ export default function Home() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <a href="/jetbrains-license" className="hover:text-cyan-600">Jetbrains License</a>
             <a href="/pricing" className="hover:text-cyan-600">Pricing</a>
             <a href="/privacy" className="hover:text-cyan-600">Privacy</a>
             <a href="/terms" className="hover:text-cyan-600">Terms</a>

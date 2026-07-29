@@ -1,6 +1,5 @@
 "use client";
 
-import BackButton from "@/components/BackButton";
 import CodeBlock from "@/components/CodeBlock";
 import LearningLayout from "@/components/LearningLayout";
 import LessonNavigation from "@/components/LessonNavigation";
