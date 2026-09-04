@@ -26,8 +26,14 @@ export default function LinksImagesPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 p-6">     
-    <LearningLayout>
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow space-y-10">
+    <LearningLayout
+      previewCode={{
+        html: `${linkExample}\n${targetExample}\n${imageExample}\n${imageSizeExample}\n${combinedExample}`,
+        css: "",
+        js: "",
+      }}
+    >
+      <div className="w-full min-h-[calc(100vh-10rem)] p-2 md:p-4 space-y-10">
 
         <h1 className="text-3xl font-bold">Links & Images</h1>
 

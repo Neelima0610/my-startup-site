@@ -15,8 +15,8 @@ type Resource = {
 
 const resources: Resource[] = [
   {
-    title: "HTML Basics",
-    description: "Learn structure, tags, and semantic HTML.",
+    title: "HTML5",
+    description: "Learn HTML5 structure, tags, and semantic HTML.",
     category: "Web Dev",
     level: "Beginner",
     href: "/elearning/html-basics",

@@ -1,5 +1,9 @@
 export const htmlLessons = [
   {
+    title: "Introduction to Web Development",
+    path: "/elearning/html-basics/introduction-to-web-development",
+  },
+  {
     title: "HTML Structure",
     path: "/elearning/html-basics/structure",
   },

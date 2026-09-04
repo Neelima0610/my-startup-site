@@ -6,6 +6,11 @@ import CodePlayground from "@/components/CodePlayground";
 
 const topics = [
   {
+    title: "Introduction to Web Development",
+    desc: "Learn how websites work and set up your web development tools",
+    href: "/elearning/html-basics/introduction-to-web-development",
+  },
+  {
     title: "HTML Structure",
     desc: "Learn how a webpage is structured",
     href: "/elearning/html-basics/structure",
@@ -39,11 +44,11 @@ export default function HtmlBasicsIndex() {
 
         {/* HEADER */}
         <h1 className="text-4xl font-bold mb-4">
-          HTML Basics
+          HTML5
         </h1>
 
         <p className="text-gray-600 mb-10">
-          Master the fundamentals of HTML with structured lessons and interactive examples.
+          Master HTML5 fundamentals with structured lessons and interactive examples.
         </p>
 
         {/* TOPIC GRID */}
@@ -72,7 +77,7 @@ export default function HtmlBasicsIndex() {
         <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6">
 
           <h2 className="text-2xl font-semibold mb-2">
-            Try HTML Basics Live
+            Try HTML5 Live
           </h2>
 
           <p className="text-sm text-gray-600 mb-6">
@@ -104,7 +109,7 @@ export default function HtmlBasicsIndex() {
                 }
                             `,
                             js: `
-                console.log("HTML Basics Playground Loaded");
+                console.log("HTML5 Playground Loaded");
               `,
             }}
           />

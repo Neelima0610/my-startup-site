@@ -32,8 +32,14 @@ export default function FormsPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-amber-50 to-cyan-100 p-6">
-    <LearningLayout>    
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow space-y-10">
+    <LearningLayout
+      previewCode={{
+        html: fullForm,
+        css: "body { font-family: sans-serif; padding: 1rem; } input, button { display: block; margin: 0.5rem 0; }",
+        js: "",
+      }}
+    >
+      <div className="w-full min-h-[calc(100vh-10rem)] p-2 md:p-4 space-y-10">
 
         <h1 className="text-3xl font-bold">HTML Forms</h1>
 
