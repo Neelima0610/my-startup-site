@@ -15,16 +15,16 @@ export default async function ToolsPage() {
       available: true,
     },
     {
-      name: "Log Inspector",
-      description: "Understand logs faster with structured analysis",
-      slug: "log-inspector",
-      available: false,
+      name: "Folder Flow - Smart Folder Organizer",
+      description: "Organize your Windows folders with a Python-powered desktop utility",
+      slug: "folder-flow",
+      available: true,
     },
     {
-      name: "API Debugger",
-      description: "Test and debug APIs easily with smart suggestions",
-      slug: "api-debugger",
-      available: false,
+      name: "HTML5 Templates",
+      description: "Ready-to-use HTML5 templates for dashboards, tools, and web projects",
+      slug: "html5-templates",
+      available: true,
     },
   ];
 
